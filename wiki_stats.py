@@ -20,35 +20,49 @@ class WikiGraph:
         print('Загружаю граф из файла: ' + filename)
 
         with open(filename) as f:
-            (n, _nlinks) = (0, 0) # TODO: прочитать из файла
+            file_data = f.readline().split()
+            self._n = int(file_data[0])
+            self._nlinks = int(file_data[-1])
             
             self._titles = []
-            self._sizes = array.array('L', [0]*n)
-            self._links = array.array('L', [0]*_nlinks)
-            self._redirect = array.array('B', [0]*n)
-            self._offset = array.array('L', [0]*(n+1))
+            self._sizes = array.array('L', [0]*self._n)
+            self._links = array.array('L', [0]*self._nlinks)
+            self._redirect = array.array('B', [0]*self._n)
+            self._offset = array.array('L', [0]*(self._n+1))
 
-            # TODO: прочитать граф из файла
+            links_iterator = 0
+            for title_number in range(self._n):
+                self._titles.append(f.readline())
+                title_size, redirect_flag, title_links_number = [int(x) for x in f.readline().split()]
+                self._sizes[title_number] = title_size
+                self._redirect[title_number] = redirect_flag
+                if title_number == 0:
+                    self._offset[title_number] = links_iterator
+                for link_number in range(title_links_number):
+                    self._links[links_iterator] = (int(f.readline()))
+                    links_iterator += 1
 
         print('Граф загружен')
 
+    def get_id(self, title):
+        return self._titles.index(title)
+
     def get_number_of_links_from(self, _id):
-        pass
+        return self._offset[_id+1]-self._offset[_id]
 
     def get_links_from(self, _id):
-        pass
-
-    def get_id(self, title):
-        pass
+        start_id = self._offset[id]
+        end_id = self._offset[id+1]
+        return end_id - start_id
 
     def get_number_of_pages(self):
-        pass
+        return self._n
 
     def is_redirect(self, _id):
-        pass
+        return self._redirect [id]
 
     def get_title(self, _id):
-        pass
+        return self._title[id]
 
     def get_page_size(self, _id):
         pass
@@ -61,15 +75,8 @@ def hist(fname, data, bins, xlabel, ylabel, title, facecolor='green', alpha=0.5,
 
 if __name__ == '__main__':
 
-    if len(sys.argv) != 2:
-        print('Использование: wiki_stats.py <файл с графом статей>')
-        sys.exit(-1)
-
-    if os.path.isfile(sys.argv[1]):
-        wg = WikiGraph()
-        wg.load_from_file(sys.argv[1])
-    else:
-        print('Файл с графом не найден')
-        sys.exit(-1)
+    print('Использование: wiki_stats.py <файл с графом статей>')
+    wg = WikiGraph()
+    wg.load_from_file('wiki_small.txt')
 
     # TODO: статистика и гистограммы
