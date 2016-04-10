@@ -21,14 +21,14 @@ class WikiGraph:
 
         with open(filename) as f:
             file_data = f.readline().split()
-            self._n = int(file_data[0])
-            self._nlinks = int(file_data[-1])
+            self._n = int(file_data[0]) #n - количество статей
+            self._nlinks = int(file_data[-1]) #nlinks - количество ссылок
             
-            self._titles = []
-            self._sizes = array.array('L', [0]*self._n)
-            self._links = array.array('L', [0]*self._nlinks)
-            self._redirect = array.array('B', [0]*self._n)
-            self._offset = array.array('L', [0]*(self._n+1))
+            self._titles = [] #titles - названия статей
+            self._sizes = array.array('L', [0]*self._n) #sizes - размеры статей
+            self._links = array.array('L', [0]*self._nlinks) #links - количество ссылок в статьях
+            self._redirect = array.array('B', [0]*self._n) #redirect - флаги перенаправления
+            self._offset = array.array('L', [0]*(self._n+1)) # offset - номер статьи, на которую ссылается статья
 
             links_iterator = 0
             for title_number in range(self._n):
@@ -44,10 +44,10 @@ class WikiGraph:
 
         print('Граф загружен')
 
-    def get_id(self, title):
+    def get_id(self, title): #индекс статьи в массиве статей
         return self._titles.index(title)
 
-    def get_number_of_links_from(self, _id):
+    def get_number_of_links_from(self, _id): #количество статей 
         return self._offset[_id+1]-self._offset[_id]
 
     def get_links_from(self, _id):
@@ -65,7 +65,44 @@ class WikiGraph:
         return self._title[id]
 
     def get_page_size(self, _id):
-        pass
+        return self._sizes[id]
+        
+    def get_count_redirection(self): #количество статей с перенаправлением
+        count_redirection = 0
+        for i in range (n):
+            if self._redirect[i]:
+                count_redirection += 1
+        return count_redirection
+        
+    def get_minimum_links_count(self): #минимальное количество ссылок из статьи
+        minimum_links_count = self._links[0]
+        for i in range (n+1):
+            if self._links[i] < minimum_links_count:
+                minimum_links_count = self._links[i]
+        return minimum_links_count
+    
+    def get_count_articles_with_min_links(self): #количество статей с минимальным количеством ссылок
+        min = minimum_links_count()
+        count_articles_with_min_links = 0
+        for i in range (n):
+            if self._links[i] == min:
+                count_articles_with_min_links += 1
+        return count_articles_with_min_links
+    
+    def get_maximum_links_count(self): #максимальное количество ссылок из статьи
+        maximum_links_count = self._links[0]
+        for i in range (n+1):
+            if self._links[i] > maximum_links_count:
+                maximum_links_count = self._links[i]
+        return maximum_links_count
+        
+    def get_count_articles_with_max_links(self): #количество статей с максимальным количеством ссылок
+        max = maximum_links_count()
+        count_articles_with_max_links = 0
+        for i in range (n):
+            if self._links[i] == max:
+                count_articles_with_max_links += 1
+        return count_articles_with_max_links
 
 
 def hist(fname, data, bins, xlabel, ylabel, title, facecolor='green', alpha=0.5, transparent=True, **kwargs):
