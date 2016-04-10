@@ -22,7 +22,7 @@ class WikiGraph:
         with open(filename) as f:
             file_data = f.readline().split()
             self._n = int(file_data[0]) #n - количество статей
-            self._nlinks = int(file_data[-1]) #nlinks - количество ссылок
+            self._nlinks = int(file_data[-1]) #nlinks - количество ссылок во всех статьях
             
             self._titles = [] #titles - названия статей
             self._sizes = array.array('L', [0]*self._n) #sizes - размеры статей
@@ -103,7 +103,22 @@ class WikiGraph:
             if self._links[i] == max:
                 count_articles_with_max_links += 1
         return count_articles_with_max_links
-
+        
+    def article_with_max_links(self): #статья с наибольшим количеством ссылок
+        max = maximum_links_count()
+        for i in range (n):
+            if self._links[i] == max:
+                article_with_max_links = i
+                break
+        return article_with_max_links
+        
+    def middle_count_links_in_article(self): #среднее количество ссылок в статье
+        return n_links/n
+        
+    def min_count_links_to_article(self): #минимальное количество ссылок на статью
+        for i in range (n):
+            for j in range (n):
+                pass
 
 def hist(fname, data, bins, xlabel, ylabel, title, facecolor='green', alpha=0.5, transparent=True, **kwargs):
     plt.clf()
